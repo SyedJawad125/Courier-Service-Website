@@ -17,6 +17,7 @@ class Product(models.Model):
 class Order(models.Model):
     bill = models.PositiveBigIntegerField()
     delivery_address = models.TextField()
+    delivery_date = models.DateField(null=True, blank=True)
     rider = models.ForeignKey(User, on_delete=models.CASCADE, related_name='order_rider', null=True,blank=True)
     customer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='order_customer', null=True,blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

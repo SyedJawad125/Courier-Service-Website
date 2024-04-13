@@ -13,6 +13,7 @@ from utils.response_messages import *
 
 from courier_site.settings import EMAIL_HOST_USER
 from django.core.mail import send_mail
+from datetime import date, timedelta
 
 
 
@@ -120,6 +121,9 @@ class OrderController:
             request.POST._mutable = True
             order_details = request.data.pop('OrderDetail') if request.data['OrderDetail'] else None
             request.data['customer'] = request.user.guid
+            today = date.today()
+            delivery_days = timedelta(2)
+            request.data['delivery_date'] = today + delivery_days
             request.POST._mutable = False
 
             serialized_data = self.serializer_class(data=request.data)

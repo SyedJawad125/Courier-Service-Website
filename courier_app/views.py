@@ -33,6 +33,7 @@ class ProductViews(ModelViewSet):
 
 
 class OrderViews(ModelViewSet):
+    authentication_classes = [JWTAuthentication]
 
     def post_order(self, request):
         return order_controller.create(request)

@@ -19,11 +19,12 @@ class ProductSerializer(ModelSerializer):
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = '__all__'
+        exclude = ['updated_at']
 
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
+        data['created_at_date'] = instance.created_at.date()
         data['order_details'] = OrderDetailSerializer(instance.order_detail_order.all(), many=True).data if instance.order_detail_order else None
         return data
 
