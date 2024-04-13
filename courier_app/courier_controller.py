@@ -122,7 +122,12 @@ class OrderController:
             order_details = request.data.pop('OrderDetail') if request.data['OrderDetail'] else None
             request.data['customer'] = request.user.guid
             today = date.today()
-            delivery_days = timedelta(2)
+            if today.weekday() in [3,4]:
+                delivery_days = timedelta(4)
+            elif today.weekday() == 5:
+                delivery_days = timedelta(3)
+            else:
+                delivery_days = timedelta(2)
             request.data['delivery_date'] = today + delivery_days
             request.POST._mutable = False
 
