@@ -1,5 +1,4 @@
 from rest_framework import serializers
-
 from .models import Product, Order, OrderDetail
 from rest_framework.serializers import ModelSerializer
 from user_auth.user_serializer import UserListingSerializer
