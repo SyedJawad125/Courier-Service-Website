@@ -126,28 +126,31 @@ class OrderController:
             request.data['delivery_date'] = today + delivery_days
             request.POST._mutable = False
 
-            serialized_data = self.serializer_class(data=request.data)
-            if serialized_data.is_valid():
-                with transaction.atomic():
-                    response_data = serialized_data.save()
-                    bill = 0
-                    if order_details:
-                        for i in order_details:
-                            i['order'] = response_data.id
-                            i['total_price'] = i['quantity'] * i['unit_price']
-                            bill += i['total_price']
-                            serialized_detail = self.order_detail_serializer(data=i)
-                            if serialized_detail.is_valid():
-                                serialized_detail.save()
-                            else:
-                                transaction.set_rollback(True)
-                                return create_response({}, get_first_error_message(serialized_detail.errors, UNSUCCESSFUL),400)
-                        response_data.bill = bill
-                        response_data.save()
-
-                return create_response(self.serializer_class(response_data).data, SUCCESSFUL, 200)
+            if request.user.role in ['admin', 'manager'] or request.user.is_superuser:  # roles
+                serialized_data = self.serializer_class(data=request.data)
+                if serialized_data.is_valid():
+                    with transaction.atomic():
+                        response_data = serialized_data.save()
+                        bill = 0
+                        if order_details:
+                            for i in order_details:
+                                i['order'] = response_data.id
+                                i['total_price'] = i['quantity'] * i['unit_price']
+                                bill += i['total_price']
+                                serialized_detail = self.order_detail_serializer(data=i)
+                                if serialized_detail.is_valid():
+                                    serialized_detail.save()
+                                else:
+                                    transaction.set_rollback(True)
+                                    return create_response({}, get_first_error_message(serialized_detail.errors, UNSUCCESSFUL),400)
+                            response_data.bill = bill
+                            response_data.save()
+            
+                    return create_response(self.serializer_class(response_data).data, SUCCESSFUL, 200)
+                else:
+                    return create_response({}, get_first_error_message(serialized_data.errors,UNSUCCESSFUL), 400)
             else:
-                return create_response({}, get_first_error_message(serialized_data.errors,UNSUCCESSFUL), 400)
+                return Response({'data': "Permission Denaied"}, 400)
         except Exception as e:
             return create_response({'error':str(e)}, UNSUCCESSFUL, 500)
         
