@@ -15,8 +15,16 @@ class Product(models.Model):
                                    blank=True)
 
 class Order(models.Model):
-    bill = models.PositiveBigIntegerField()
+
+    status_choices = (
+            ("booked", "booked"),
+            ("in_process", "in_process"),
+            ("delivered", "delivered")
+        )
+
+    bill = models.PositiveBigIntegerField(null=True, blank=True)
     delivery_address = models.TextField()
+    status = models.CharField(max_length=50, choices = status_choices, null=True, blank=True)
     delivery_date = models.DateField(null=True, blank=True)
     rider = models.ForeignKey(User, on_delete=models.CASCADE, related_name='order_rider', null=True,blank=True)
     customer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='order_customer', null=True,blank=True)
@@ -31,9 +39,7 @@ class OrderDetail(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='order_detail_product')
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_detail_order')
 
-    # def total_prices(self):
-    #     return self.unit_price * self.quantity
-
-    # def save(self, *args, **kwargs):
-    #     self.total_price = self.unit_price * self.quantity
-    #     super().save(*args, **kwargs)
+# class rider(models.Model):
+#     name = models.CharField(max_length=50)
+#     vehicle_type = models.CharField(max_length=50)
+#     contact_number = models.PositiveIntegerField()
