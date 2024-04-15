@@ -129,6 +129,7 @@ class OrderController:
             else:
                 delivery_days = timedelta(2)
             request.data['delivery_date'] = today + delivery_days
+            request.data['status'] = 'booked'
             request.POST._mutable = False
 
             if request.user.role in ['admin', 'manager'] or request.user.is_superuser:  # roles
