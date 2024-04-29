@@ -46,3 +46,4 @@ class OrderViews(ModelViewSet):
 
     def delete_order(self, request):
         return order_controller.delete_order(request)
+    
