@@ -119,7 +119,7 @@ class OrderController:
     def create(self, request):
         try:
             request.POST._mutable = True
-            order_details = request.data.pop('OrderDetail') if request.data['OrderDetail'] else None
+            order_details = request.data.pop('OrderDetail') if 'OrderDetail' in request.data else None
             request.data['customer'] = request.user.guid
             today = date.today()
             if today.weekday() in [3,4]:
