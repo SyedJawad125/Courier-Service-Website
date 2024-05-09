@@ -6,7 +6,7 @@ from django.contrib.auth.models import AbstractUser
 from utils.reusable_methods import generate_access_token
 from utils.reusable_classes import TimeStamps
 
-    
+   
 class User(TimeStamps,AbstractUser):
     role_choices = (
             ("admin", "admin"),
